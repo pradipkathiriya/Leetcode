@@ -1,5 +1,5 @@
-class Solution:
-    def minimumFuelCost(self, roads: List[List[int]], seats: int) -> int:
+class Solution(object):
+    def minimumFuelCost(self, roads, seats):
         """
         :type roads: List[List[int]]
         :type seats: int
@@ -9,18 +9,20 @@ class Solution:
         for src, dst in roads:
             adj[src].append(dst)
             adj[dst].append(src)
-        res = 0
+
         def dfs(node, prev_node):
-            nonlocal res
             passanger = 0
+            res = 0
             for child in adj[node]:
                 if child == prev_node:
                     continue
-                p = dfs(child, node)
+                p, r = dfs(child, node)
                 passanger += p
-                res += int(ceil(p/seats))
+                res += int(p/seats)
+                res += (p%seats > 0)
+                res += r
 
-            return passanger + 1
+            return (passanger + 1, res)
 
-        passanger = dfs(0, -1)
+        passanger, res = dfs(0, -1)
         return res
